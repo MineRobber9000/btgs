@@ -79,13 +79,20 @@ class GeminiRequestHandler(BaseRequestHandler):
 		if len(request)>1024: # maximum URL length is 1024 bytes
 			self.header(59) # bad request
 			return
-		request = GeminiRequest(self.request,request.decode("utf-8"),buffer) # set up GeminiRequest object
+		try:
+			request = self.massage_request_line(request.decode("utf-8"),buffer)
+		except:
+			self.header(59) # bad request
+			return
 		if not self.preflight(request):
 			return # preflight will return the appropriate status code
 		if hasattr(self,f"handle_{request.scheme}"): # if we have a handler for that status...
 			getattr(self,f"handle_{request.scheme}")(request) # ...use it
 		else: # if not...
 			self.header(53) # treat it as a proxy request and refuse it
+	def massage_request_line(self,request_line,buffer):
+		"""Massages the request line into a GeminiRequest object."""
+		return GeminiRequest(self.request,request_line,buffer) # set up GeminiRequest object
 	def header(self,response_code,meta=""):
 		"""Sends a response header down the line. Will default to the entry in self.DEFAULT_META if it exists and meta is not provided."""
 		if not meta: meta = self.DEFAULT_META.get(response_code,"")
