@@ -14,8 +14,8 @@ Honestly, I decided to start over from scratch rather than work on the foundatio
 
 ## Roadmap
 
- - [ ] Handle gemini requests
-    - [ ] Static file serving
+ - [X] Handle gemini requests
+    - [X] Static file serving
       - [ ] CGI scripts?
     - [ ] Server-side scripting
       - [ ] Similar to how Jetforce does the application thing?
